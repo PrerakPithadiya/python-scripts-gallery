@@ -1,6 +1,5 @@
 import turtle
 
-
 def draw_square(color, x, y):
     turtle.penup()
     turtle.goto(x, y)
