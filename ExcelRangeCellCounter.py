@@ -26,9 +26,18 @@ def parse_range(range_str):
 
 def count_cells_in_range(range_str):
     start_col, start_row, end_col, end_row = parse_range(range_str)
-    col_count = (
-        column_letter_to_number(end_col) - column_letter_to_number(start_col) + 1
-    )
+    start_col_num = column_letter_to_number(start_col)
+    end_col_num = column_letter_to_number(end_col)
+    # Range validation
+    if start_col_num > end_col_num:
+        raise ValueError(
+            f"Invalid range: start column '{start_col}' is after end column '{end_col}'."
+        )
+    if start_row > end_row:
+        raise ValueError(
+            f"Invalid range: start row {start_row} is after end row {end_row}."
+        )
+    col_count = end_col_num - start_col_num + 1
     row_count = end_row - start_row + 1
     total_cells = col_count * row_count
     return row_count, col_count, total_cells
