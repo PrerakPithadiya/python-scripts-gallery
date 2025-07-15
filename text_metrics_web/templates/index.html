@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Metrics Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 700px;
+            margin-top: 40px;
+        }
+
+        .card {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .metrics-table td {
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Text Metrics Calculator</h3>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="text" class="form-label">Enter text to analyze:</label>
+                        <textarea class="form-control" id="text" name="text" rows="5">{{ content }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Or upload a text file:</label>
+                        <input class="form-control" type="file" id="file" name="file" accept=".txt">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Analyze</button>
+                </form>
+                {% if metrics %}
+                <hr>
+                <h5>Text Metrics:</h5>
+                <table class="table metrics-table">
+                    <tbody>
+                        <tr>
+                            <td>Sentences</td>
+                            <td>{{ metrics.sentences }}</td>
+                        </tr>
+                        <tr>
+                            <td>Words</td>
+                            <td>{{ metrics.words }}</td>
+                        </tr>
+                        <tr>
+                            <td>Characters (excluding whitespace)</td>
+                            <td>{{ metrics.characters }}</td>
+                        </tr>
+                        <tr>
+                            <td>Whitespace characters</td>
+                            <td>{{ metrics.whitespace }}</td>
+                        </tr>
+                        <tr>
+                            <td>Special characters</td>
+                            <td>{{ metrics.special_characters }}</td>
+                        </tr>
+                        <tr>
+                            <td>Language detected</td>
+                            <td>{{ language }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mb-4 text-center">
+                    <h6>Metrics Chart</h6>
+                    {% if metrics.sentences or metrics.words or metrics.characters or metrics.whitespace or
+                    metrics.special_characters %}
+                    {% if chart_labels and chart_values and (chart_values|sum) > 0 %}
+                    <canvas id="metricsChart"
+                        style="max-width: 400px; min-height: 220px; min-width: 300px; background: #fff; border: 1px solid #ddd; padding: 8px;"></canvas>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script type="text/javascript">
+                        var chartLabels = {{ chart_labels| tojson | safe }};
+                        var chartValues = {{ chart_values| tojson | safe }};
+                    </script>
+                    </script>
+                    <script>
+                        const ctx = document.getElementById('metricsChart').getContext('2d');
+                        const metricsChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: chartLabels,
+                                datasets: [{
+                                    label: 'Value',
+                                    data: chartValues,
+                                    backgroundColor: '#4a90e2',
+                                    borderRadius: 6
+                                }]
+                            },
+                            options: {
+                                plugins: {
+                                    tooltip: {
+                                        enabled: true,
+                                        callbacks: {
+                                            label: function (context) {
+                                                return context.parsed.y;
+                                            }
+                                        }
+                                    },
+                                    legend: { display: false }
+                                },
+                                scales: {
+                                    y: { beginAtZero: true }
+                                }
+                            }
+                        });
+                    </script>
+                    {% else %}
+                    <div
+                        style="height:220px; display:flex; align-items:center; justify-content:center; border:1px solid #ddd; background:#fff; min-width:300px;">
+                        No chart to display for empty or zero metrics.
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <form method="POST" action="{{ url_for('calculate') }}">
+                    <input type="hidden" name="content" value="{{ content }}">
+                    <input type="hidden" name="sentences" value="{{ metrics.sentences }}">
+                    <input type="hidden" name="words" value="{{ metrics.words }}">
+                    <input type="hidden" name="characters" value="{{ metrics.characters }}">
+                    <input type="hidden" name="whitespace" value="{{ metrics.whitespace }}">
+                    <input type="hidden" name="special_characters" value="{{ metrics.special_characters }}">
+                    <input type="hidden" name="language" value="{{ language }}">
+                    <div class="mb-3">
+                        <label for="filename" class="form-label">Report filename:</label>
+                        <input type="text" class="form-control" id="filename" name="filename" value="report.txt">
+                    </div>
+                    <button type="submit" class="btn btn-success">Download Report</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        <footer class="mt-4 text-center text-muted">
+            &copy; {{ 2025 }} Text Metrics Calculator Web App
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
