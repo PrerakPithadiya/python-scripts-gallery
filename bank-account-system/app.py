@@ -1,5 +1,6 @@
 from database import Database
 from datetime import datetime
+import sys
 
 class BankAccount:
     def __init__(self, account_number, holder_name, dob, balance=0, transaction_history=None):
@@ -68,8 +69,14 @@ class Bank:
         return False
 
 def main():
-    connection_string = "mongodb+srv://prerakpithadiya_db_user:SV7OaGSBN0LcKcJY@cluster0.s2lpezb.mongodb.net/"
-    bank = Bank(connection_string)
+    try:
+        from config import MONGO_CONNECTION_STRING
+    except ImportError:
+        print("Error: Configuration file 'config.py' not found.")
+        print("Please create it by copying 'config_example.py' and adding your MongoDB connection string.")
+        sys.exit(1)
+
+    bank = Bank(MONGO_CONNECTION_STRING)
 
     while True:
         print("\n==== Bank Menu ====")

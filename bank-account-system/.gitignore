@@ -1,0 +1,21 @@
+# Configuration
+config.py
+
+# Old data files
+accounts.json
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE-specific folders
+.vscode/
+.idea/

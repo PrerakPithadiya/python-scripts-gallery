@@ -1,0 +1,1 @@
+MONGO_CONNECTION_STRING = "your_mongodb_connection_string_here"
