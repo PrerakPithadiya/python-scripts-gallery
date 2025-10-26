@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env/
+venv/
+ENV/
+env.bak/
+*.egg-info/
+*.egg
+*.log
+*.sqlite3
+*.db
+*.dat
+*.csv
+*.tsv
+*.pot
+*.mo
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+*.orig
+*.rej
+*.out
+*.coverage
+.coverage.*
+.cache/
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Reports, uploads, and other generated files
+reports/
+uploads/
