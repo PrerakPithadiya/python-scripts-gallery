@@ -37,7 +37,8 @@ class BankAccount:
         }
 
     def add_transaction(self, transaction_type, amount):
-        self.transaction_history.append({"type": transaction_type, "amount": amount})
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.transaction_history.append({"type": transaction_type, "amount": amount, "timestamp": timestamp})
 
 class Bank:
     def __init__(self, connection_string):
@@ -85,9 +86,10 @@ def main():
         print("3. Withdraw")
         print("4. Account Details")
         print("5. Delete Account")
-        print("6. Exit")
+        print("6. View Transaction History")
+        print("7. Exit")
 
-        choice = input("Enter your choice (1-6): ")
+        choice = input("Enter your choice (1-7): ")
 
         if choice == "1":
             holder_name = input("Enter account holder name: ")
@@ -205,10 +207,26 @@ def main():
                 print("Invalid account number.")
 
         elif choice == "6":
+            account_number = input("Enter your account number: ")
+            account = bank.get_account(account_number)
+            if account:
+                print(f"\n==== Transaction History for Account {account_number} ====")
+                history = account.transaction_history
+                if history:
+                    for transaction in history:
+                        # Check for timestamp for backward compatibility
+                        timestamp = transaction.get('timestamp', 'Timestamp not available')
+                        print(f"  - {timestamp}: {transaction['type']} of ₹{transaction['amount']:.2f}")
+                else:
+                    print("No transactions found for this account.")
+            else:
+                print("Invalid account number.")
+
+        elif choice == "7":
             print("Thank you for using the bank. Goodbye!")
             break
         else:
-            print("Invalid choice. Please enter a number between 1 and 6.")
+            print("Invalid choice. Please enter a number between 1 and 7.")
 
 
 if __name__ == "__main__":

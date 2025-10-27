@@ -6,6 +6,7 @@ class Database:
         self.client = pymongo.MongoClient(connection_string)
         self.db = self.client[db_name]
         self.collection = self.db[collection_name]
+        self.transactions = self.db["transactions"]
 
     def create_account(self, account_data):
         self.collection.insert_one(account_data)
@@ -18,3 +19,16 @@ class Database:
 
     def delete_account(self, account_number):
         self.collection.delete_one({"account_number": account_number})
+    
+        def add_transaction(self, account_number, transaction_type, amount, date, time):
+            transaction = {
+                "account_number": account_number,
+                "type": transaction_type,
+                "amount": amount,
+                "date": date,
+                "time": time
+            }
+            self.transactions.insert_one(transaction)
+
+        def get_transactions(self, account_number):
+            return list(self.transactions.find({"account_number": account_number}))

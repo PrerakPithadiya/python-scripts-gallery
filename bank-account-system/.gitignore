@@ -15,6 +15,8 @@ __pycache__/
 venv/
 .venv/
 env/
+.venv311/
+venv311/
 
 # IDE-specific folders
 .vscode/
